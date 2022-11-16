@@ -64,7 +64,7 @@ Qubit
    :undoc-members: qubit_id, entanglement_info, remote_entangled_node, measure,
                 X, Y, Z, H, S, K, T,
                 rot_X, rot_Y, rot_Z,
-                cnot, cphase, reset, free
+                cnot, cphase, crot_Z, reset, free
 
 EPR socket
 ----------

@@ -370,6 +370,37 @@ class Qubit:
             target_qubit_id=target.qubit_id,
         )
 
+    def crot_Z(
+        self,
+        target: Qubit,
+        n: Union[int, Template] = 0,
+        d: int = 0,
+        angle: Optional[float] = None) -> None:
+        """Do a controlled rotation around the Z-axis of the specified angle between this qubit
+        (control) and a target qubit.
+
+        The angle is interpreted as ǹ * pi / 2 ^d` radians. For example, (n, d)
+        = (1, 2) represents an angle of pi/4 radians. If `angle` is specified,
+        `n` and `d` are ignored and this instruction is automatically converted
+        into a sequence of (n, d) rotations such that the discrete (n, d) values
+        approximate the original angle.
+
+        :param target: target qubit. Should have the same connection as this qubit.
+        :param n: numerator of discrete angle specification. Can be a Template,
+            in which case the subroutine containing this command should first be
+            instantiated before flushing.
+        :param d: denominator of discrete angle specification
+        :param angle: exact floating-point angle, defaults to None
+        """
+        self.builder._build_cmds_controlled_qubit_rotation(
+            instruction=GenericInstr.CROT_Z,
+            control_qubit_id=self.qubit_id,
+            target_qubit_id=target.qubit_id,
+            n=n,
+            d=d,
+            angle=angle,
+        )
+
     def reset(self) -> None:
         r"""Reset the qubit to the state \|0>."""
         self.builder._build_cmds_init_qubit(qubit_id=self.qubit_id)

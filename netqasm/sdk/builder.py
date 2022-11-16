@@ -1108,6 +1108,42 @@ class Builder:
         )
         self.subrt_add_pending_command(qubit_command)
 
+    def _build_cmds_controlled_qubit_rotation(
+        self,
+        instruction: GenericInstr,
+        control_qubit_id: int,
+        target_qubit_id: int,
+        n: Union[int, Template] = 0,
+        d: int = 0,
+        angle: Optional[float] = None,
+    ) -> None:
+        if angle is not None:
+            nds = get_angle_spec_from_float(angle=angle)
+            for n, d in nds:
+                self._build_cmds_controlled_qubit_rotation(
+                    instruction=instruction,
+                    control_qubit_id=control_qubit_id,
+                    target_qubit_id=target_qubit_id,
+                    n=n,
+                    d=d,
+                )
+            return
+        if not (isinstance(n, int) and isinstance(d, int) and n >= 0 and d >= 0):
+            # We only allow this if n is a Template
+            if not isinstance(n, Template):
+                raise ValueError(
+                    f"{n} * pi / 2 ^ {d} is not a valid angle specification"
+                )
+        register1 = self._get_qubit_register(0)
+        self._build_cmds_set_register_value(register1, control_qubit_id)
+        register2 = self._get_qubit_register(1)
+        self._build_cmds_set_register_value(register2, target_qubit_id)
+        command = ICmd(
+            instruction=instruction,
+            operands=[register1, register2, n, d],
+        )
+        self.subrt_add_pending_command(command)
+
     def _build_cmds_move_qubit(self, source: int, target: int) -> None:
         # Moves a qubit from one position to another (assumes that target is free)
         assert target not in [q.qubit_id for q in self._mem_mgr.get_active_qubits()]

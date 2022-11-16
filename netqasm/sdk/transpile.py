@@ -299,6 +299,13 @@ class NVSubroutineTranspiler(SubroutineTranspiler):
                 return self._map_cphase_electron_carbon(swapped)
             else:
                 return self._map_cphase_carbon_carbon(instr)
+        elif isinstance(instr, vanilla.ControlledRotZInstruction):
+            if qubit_id0 == 0:
+                return self._map_crot_z_electron_carbon(instr)
+            elif qubit_id1 == 0:
+                return self._map_crot_z_carbon_electron(instr)
+            else:
+                return self._map_crot_z_carbon_carbon(instr)
         elif isinstance(instr, vanilla.MovInstruction):
             if qubit_id0 == 0 and qubit_id1 != 0:
                 return self._move_electron_carbon(instr)
@@ -453,6 +460,58 @@ class NVSubroutineTranspiler(SubroutineTranspiler):
         result += (
             self.swap(instr.lineno, electron, carbon)
             + self._map_cnot_electron_carbon(instr)
+            + self.swap(instr.lineno, electron, carbon)
+        )
+        return result
+
+    def _map_crot_z_electron_carbon(
+        self,
+        instr: vanilla.ControlledRotZInstruction,
+    ) -> List[NetQASMInstruction]:
+        electron = instr.reg0
+        carbon = instr.reg1
+
+        return [
+            nv.ControlledRotZInstruction(
+                lineno=instr.lineno,
+                reg0=electron,
+                reg1=carbon,
+                imm0=Immediate(8),
+                imm1=Immediate(4),
+            ),
+        ]
+
+    def _map_crot_z_carbon_electron(
+        self,
+        instr: vanilla.ControlledRotZInstruction,
+    ) -> List[NetQASMInstruction]:
+        electron = instr.reg1
+        carbon = instr.reg0
+
+        return [
+            nv.ControlledRotZInstruction(
+                lineno=instr.lineno,
+                reg0=electron,
+                reg1=carbon,
+                imm0=Immediate(8),
+                imm1=Immediate(4),
+            ),
+        ]
+
+    def _map_crot_z_carbon_carbon(
+        self, instr: vanilla.ControlledRotZInstruction
+    ) -> List[NetQASMInstruction]:
+        electron = self.get_unused_register()
+        carbon = instr.reg0
+        set_electron = core.SetInstruction(
+            lineno=instr.lineno, reg=electron, imm=Immediate(0)
+        )
+        instr.reg0 = electron
+
+        result: List[NetQASMInstruction] = [set_electron]
+        result += (
+            self.swap(instr.lineno, electron, carbon)
+            + self._map_crot_z_electron_carbon(instr)
             + self.swap(instr.lineno, electron, carbon)
         )
         return result

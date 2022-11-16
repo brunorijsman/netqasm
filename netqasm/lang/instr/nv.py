@@ -105,11 +105,27 @@ class ControlledRotYInstruction(core.ControlledRotationInstruction):
     mnemonic: str = "crot_y"
 
     def to_matrix(self) -> np.ndarray:
-        axis = [1, 0, 0]
+        axis = [0, 1, 0]
         angle = self.angle_num.value * np.pi / 2**self.angle_denom.value
         return get_controlled_rotation_matrix(axis, angle)
 
     def to_matrix_target_only(self) -> np.ndarray:
-        axis = [1, 0, 0]
+        axis = [0, 1, 0]
+        angle = self.angle_num.value * np.pi / 2**self.angle_denom.value
+        return get_rotation_matrix(axis, angle)
+
+
+@dataclass
+class ControlledRotZInstruction(core.ControlledRotationInstruction):
+    id: int = 32
+    mnemonic: str = "crot_z"
+
+    def to_matrix(self) -> np.ndarray:
+        axis = [0, 0, 1]
+        angle = self.angle_num.value * np.pi / 2**self.angle_denom.value
+        return get_controlled_rotation_matrix(axis, angle)
+
+    def to_matrix_target_only(self) -> np.ndarray:
+        axis = [0, 0, 1]
         angle = self.angle_num.value * np.pi / 2**self.angle_denom.value
         return get_rotation_matrix(axis, angle)

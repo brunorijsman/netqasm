@@ -134,6 +134,24 @@ class CphaseInstruction(core.TwoQubitInstruction):
 
 
 @dataclass
+class ControlledRotZInstruction(core.ControlledRotationInstruction):
+    id: int = 31
+    mnemonic: str = "crot_z"
+
+    def to_matrix(self) -> np.ndarray:
+        tm = self.to_matrix_target_only()
+        return np.array([[1, 0, 0,        0],
+                         [0, 1, 0,        0],
+                         [0, 0, tm[0][0], tm[0][1]],
+                         [0, 0, tm[1][0], tm[1][1]]])
+
+    def to_matrix_target_only(self) -> np.ndarray:
+        axis = [0, 0, 1]
+        angle = self.angle_num.value * np.pi / 2**self.angle_denom.value
+        return get_rotation_matrix(axis, angle)
+
+
+@dataclass
 class MovInstruction(core.TwoQubitInstruction):
     """Move source qubit to target qubit (target is overwritten)"""
 

@@ -72,6 +72,16 @@ def gate_to_matrix(instr, angle=None):
             n, d = angle
             angle = n * np.pi / 2**d
         return get_rotation_matrix(axis=axis, angle=angle)
+    elif instr in [GenericInstr.CROT_Z]:
+        if angle is None:
+            raise TypeError(
+                "To get the matrix of a rotation an angle needs to be specified"
+            )
+        axis = [0, 0, 1]
+        if isinstance(angle, tuple):
+            n, d = angle
+            angle = n * np.pi / 2**d
+        return get_controlled_rotation_matrix(axis=axis, angle=angle)
     else:
         raise ValueError(f"{instr} is not a quantum gate")
 
