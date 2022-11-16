@@ -375,7 +375,8 @@ class Qubit:
         target: Qubit,
         n: Union[int, Template] = 0,
         d: int = 0,
-        angle: Optional[float] = None) -> None:
+        angle: Optional[float] = None,
+    ) -> None:
         """Do a controlled rotation around the Z-axis of the specified angle between this qubit
         (control) and a target qubit.
 

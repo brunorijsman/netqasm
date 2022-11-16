@@ -140,10 +140,14 @@ class ControlledRotZInstruction(core.ControlledRotationInstruction):
 
     def to_matrix(self) -> np.ndarray:
         tm = self.to_matrix_target_only()
-        return np.array([[1, 0, 0,        0],
-                         [0, 1, 0,        0],
-                         [0, 0, tm[0][0], tm[0][1]],
-                         [0, 0, tm[1][0], tm[1][1]]])
+        return np.array(
+            [
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, tm[0][0], tm[0][1]],
+                [0, 0, tm[1][0], tm[1][1]],
+            ]
+        )
 
     def to_matrix_target_only(self) -> np.ndarray:
         axis = [0, 0, 1]
