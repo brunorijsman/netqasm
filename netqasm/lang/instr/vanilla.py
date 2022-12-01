@@ -135,7 +135,7 @@ class CphaseInstruction(core.TwoQubitInstruction):
 
 @dataclass
 class ControlledRotZInstruction(core.ControlledRotationInstruction):
-    id: int = 31
+    id: int = 32
     mnemonic: str = "crot_z"
 
     def to_matrix(self) -> np.ndarray:
