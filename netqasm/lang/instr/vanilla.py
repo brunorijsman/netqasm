@@ -135,7 +135,42 @@ class CphaseInstruction(core.TwoQubitInstruction):
 
 @dataclass
 class ControlledRotZInstruction(core.ControlledRotationInstruction):
-    id: int = 32
+@dataclass
+class ControlledRotZInstruction(core.ControlledRotationInstruction):
+    # TODO It seems obvious that the id should be 32, but if we change this from 31 to 32 then
+    #      any application that uses and epr_socket crashes with the following exception:
+    #    
+    # Error encountered while running the experiment
+    # {'exception': 'CalledProcessError', 'message': 'NetQASM returned with exit status 1.', 'trace': 'Traceback (most recent call last):
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/bin/netqasm", line 8, in <module>
+    #     sys.exit(cli())
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/site-packages/click/core.py", line 1130, in __call__
+    #     return self.main(*args, **kwargs)
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/site-packages/click/core.py", line 1055, in main
+    #     rv = self.invoke(ctx)
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/site-packages/click/core.py", line 1657, in invoke
+    #     return _process_result(sub_ctx.command.invoke(sub_ctx))
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/site-packages/click/core.py", line 1404, in invoke
+    #     return ctx.invoke(self.callback, **ctx.params)
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/site-packages/click/core.py", line 760, in invoke
+    #     return __callback(*args, **kwargs)
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/site-packages/netqasm/runtime/cli.py", line 330, in simulate
+    #     simulate_application = importlib.import_module(
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    #     return _bootstrap._gcd_import(name[level:], package, level)
+    #   File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+    #   File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+    #   File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+    #   File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+    #   File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+    #   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/site-packages/netqasm/sdk/external.py", line 34, in <module>
+    #     from squidasm.nqasm.multithread import (
+    #   File "/Users/brunorijsman/.pyenv/versions/3.10.4/lib/python3.10/site-packages/squidasm/__init__.py", line 3, in <module>
+    #     raise NotImplementedError("SquidASM is still WIP and this is currently just a placeholder package")
+    # NotImplementedError: SquidASM is still WIP and this is currently just a placeholder package
+    #
+    id: int = 31
     mnemonic: str = "crot_z"
 
     def to_matrix(self) -> np.ndarray:
