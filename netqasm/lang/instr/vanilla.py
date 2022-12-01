@@ -135,8 +135,6 @@ class CphaseInstruction(core.TwoQubitInstruction):
 
 @dataclass
 class ControlledRotZInstruction(core.ControlledRotationInstruction):
-@dataclass
-class ControlledRotZInstruction(core.ControlledRotationInstruction):
     # TODO It seems obvious that the id should be 32, but if we change this from 31 to 32 then
     #      any application that uses and epr_socket crashes with the following exception:
     #    
